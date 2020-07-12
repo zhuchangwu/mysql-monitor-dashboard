@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "monitor/task";
+
+// 监控项的类型
+enum Type {
+  Sys = 0;
+  App = 1;
+  MySQL = 2;
+}
+
+// 定义消息，消息为service中发送或者是接受的内容
+message RpcSysTask {
+  Type itemType = 1; // 监控项的类型
+  SysMsg sysmsg = 2;
+  AppMsg appmsg = 3;
+  MySQLMsg mysqlmsg = 4;
+}
+
+// 操作系统监控项相关
+message SysMsg{
+  string itemName = 1; // 监控项名
+  string cycle = 2; // 监控周期
+}
+
+// 应用监控项相关
+message AppMsg{
+  string itemName = 1; // 监控项名
+  string cycle = 2; // 监控周期
+  int32 port = 3; // 监控监控端口
+  bool isNew = 4; // 是否是新增的监控项
+}
+
+// mysql监控相关
+message MySQLMsg{
+}
+
+// 响应信息
+message Response{
+  int32 status = 1;
+  string responseMsg = 2;
+}
+
+// 服务：服务中有方法可以进行rpc过程
+service FlowService{
+  rpc SendTaskToMysqlMonitor(RpcSysTask) returns (Response){}
+}
